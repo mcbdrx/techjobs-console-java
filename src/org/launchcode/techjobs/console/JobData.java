@@ -10,6 +10,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by LaunchCode
@@ -54,6 +55,32 @@ public class JobData {
         return allJobs;
     }
 
+    public static ArrayList<HashMap<String, String>> findByValue(String value) {
+
+        loadData();
+
+        ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
+
+        for (HashMap<String, String> row : allJobs) {
+
+            Map<String, String> job = row;
+            for (Map.Entry<String, String> entry : job.entrySet()) {
+
+                if (entry.getValue().toLowerCase().contains(value.toLowerCase())) {
+                    jobs.add(row);
+
+                    break;
+
+                }
+            }
+        }
+
+        return jobs;
+
+
+    }
+
+
     /**
      * Returns results of search the jobs data by key/value, using
      * inclusion of the search term.
@@ -75,8 +102,7 @@ public class JobData {
         for (HashMap<String, String> row : allJobs) {
 
             String aValue = row.get(column);
-
-            if (aValue.contains(value)) {
+            if (aValue.toLowerCase().contains(value.toLowerCase())) {
                 jobs.add(row);
             }
         }
@@ -98,6 +124,7 @@ public class JobData {
 
             // Open the CSV file and set up pull out column header info and records
             Reader in = new FileReader(DATA_FILE);
+
             CSVParser parser = CSVFormat.RFC4180.withFirstRecordAsHeader().parse(in);
             List<CSVRecord> records = parser.getRecords();
             Integer numberOfColumns = records.get(0).size();
